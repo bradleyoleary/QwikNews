@@ -1,8 +1,9 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import Bookmarks from './Components/Bookmarks';
-import Home from './Components/Home';
-import GlobalStyles from './GlobalStyles';
+import Header from './Components/Header';
+import NewsCards from './Components/NewsCards';
+import GlobalStyles from './Styles/GlobalStyles';
 
 function App() {
   return (
@@ -11,7 +12,8 @@ function App() {
         <GlobalStyles />
         <Switch>
           <Route exact path='/'>
-            <Home />
+            <Header />
+            <NewsCards />
           </Route>
           <Route path='/bookmarks'>
             <Bookmarks />
