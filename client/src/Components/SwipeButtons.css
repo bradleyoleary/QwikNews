@@ -1,0 +1,13 @@
+/*Had some issues styling Mui buttons, so I created this file instead. Might be temp.*/
+.swipeButtons {
+  position: fixed;
+  display: flex;
+  justify-content: space-evenly;
+  width: 100%;
+  bottom: 7vh;
+}
+
+.swipeButtons .MuiIconButton-root {
+  background-color: white;
+  box-shadow: 0px 0px 23px -1px rgba(0, 0, 0, 0.26);
+}

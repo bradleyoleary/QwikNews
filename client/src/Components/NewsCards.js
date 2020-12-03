@@ -1,35 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import TinderCard from 'react-tinder-card';
-import Axios from 'axios';
+import { fetchNews } from '../API/Api';
 
 const NewsCards = () => {
-  const [articles, setArticles] = useState([]);
-
+  const [newsArticles, setNewsArticles] = useState([]);
   useEffect(() => {
-    const getArticles = async () => {
-      try {
-        const response = await Axios.get(
-          `https://newsapi.org/v2/everything?q=sports&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
-        );
-        setArticles(response.data.articles);
-        console.log(response);
-      } catch (error) {
-        console.log(error);
-      }
+    const fetchAPI = async () => {
+      setNewsArticles(await fetchNews());
     };
-    getArticles();
+    fetchAPI();
   }, []);
+
+  // console.log(newsArticles);
 
   return (
     <div>
       <CardContainer>
-        {articles.map((article) => (
+        {newsArticles.map((article) => (
           <NewsCard key={article.title} preventSwipe={['up', 'down']}>
             <Card style={{ backgroundImage: `url(${article.urlToImage})` }}>
               <BottomContainer>
+                <ArticleSource>{article.source.name}</ArticleSource>
                 <ArticleName>{article.title}</ArticleName>
-                <ArticleDescription>{article.description}</ArticleDescription>
+                {/* <ArticleDescription>{article.description}</ArticleDescription> */}
               </BottomContainer>
             </Card>
           </NewsCard>
@@ -58,17 +52,25 @@ const Card = styled.div`
   border-radius: 16px;
   background-size: cover;
   background-position: center;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.23);
+  /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.23); //Need to fix shadow */
 `;
 
-const ArticleName = styled.h1`
-  display: flex;
+const ArticleSource = styled.span`
+  font-weight: 500;
+  color: #757575;
+  margin-bottom: 10px;
 `;
 
-const ArticleDescription = styled.p`
+const ArticleName = styled.p`
   display: flex;
-  padding-top: 6px;
+  font-weight: 500;
+  color: #303030;
 `;
+
+// const ArticleDescription = styled.p`
+//   display: flex;
+//   padding-top: 6px;
+// `;
 
 const BottomContainer = styled.div`
   position: absolute;
@@ -77,13 +79,14 @@ const BottomContainer = styled.div`
   bottom: 0px;
   right: 0px;
   left: 0px;
-  padding: 10px;
+  padding: 0px 8px;
   background-color: white;
   width: 600px;
   max-width: 85vw;
-  height: 160px;
-  border-radius: 10px;
+  height: 115px;
+  border-radius: 12px;
   justify-content: center;
+  border: 3px solid #24cca7; //Temp fix to the shadow issue
 `;
 
 export default NewsCards;
