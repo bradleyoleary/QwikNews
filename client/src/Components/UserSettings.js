@@ -62,18 +62,13 @@ export default function UserSettings() {
       <Divider />
       <Wrap>
         <SelectSource>Select Source</SelectSource>
-
-        <FormControl className='app__dropdown'>
-          <SelectDropdown variant='outlined' value=''>
-            {/* looping through all sources to show in the dropdown */}
-            {newsSources.map((sources) => {
-              <MenuItem>{sources.name}</MenuItem>;
-              console.log(sources.name);
-            })}
-            <MenuItem value='test'>TEST</MenuItem>
-            <MenuItem value='worldwide'>ANOTHER TEST</MenuItem>
-          </SelectDropdown>
-        </FormControl>
+        {/* need to place an onChange in here to be fired when a menu item is selected */}
+        <SelectDropdown variant='outlined' value=''>
+          {/* looping through all sources to show in the dropdown */}
+          {newsSources.map((sources) => {
+            return <MenuItem value={sources.name}>{sources.name}</MenuItem>;
+          })}
+        </SelectDropdown>
 
         <FormControl>
           <SelectCategory>Select Category</SelectCategory>
