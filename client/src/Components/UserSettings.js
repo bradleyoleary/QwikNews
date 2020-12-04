@@ -1,59 +1,139 @@
 import React from 'react';
-import 'antd/dist/antd.css';
-import { Drawer, Radio, Space } from 'antd';
-import IconButton from '@material-ui/core/IconButton';
+import styled from 'styled-components';
+import clsx from 'clsx';
+import {
+  makeStyles,
+  Drawer,
+  List,
+  Divider,
+  IconButton,
+  MenuItem,
+  FormControl,
+  Select,
+} from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
+import { COLORS } from '../Styles/Constants';
 
-class UserSettings extends React.Component {
-  state = { visible: false, placement: 'bottom' };
+const useStyles = makeStyles({
+  list: {
+    width: 250,
+  },
+  fullList: {
+    width: 'auto',
+  },
+});
 
-  showDrawer = () => {
-    this.setState({
-      visible: true,
-    });
+export default function UserSettings() {
+  const classes = useStyles();
+  const [state, setState] = React.useState({
+    right: false,
+  });
+
+  const toggleDrawer = (anchor, open) => (event) => {
+    if (
+      event.type === 'keydown' &&
+      (event.key === 'Tab' || event.key === 'Shift')
+    ) {
+      return;
+    }
+
+    setState({ ...state, [anchor]: open });
   };
 
-  onClose = () => {
-    this.setState({
-      visible: false,
-    });
-  };
+  const list = (anchor) => (
+    <div
+      className={clsx(classes.list, {
+        [classes.fullList]: anchor === 'top' || anchor === 'bottom',
+      })}
+      role='presentation'
+      onKeyDown={toggleDrawer(anchor, false)}>
+      <List>
+        <Settings>My Settings</Settings>
+      </List>
+      <Divider />
+      <Wrap>
+        <SelectSource>Select Source</SelectSource>
+        <FormControl className='app__dropdown'>
+          <SelectDropdown variant='outlined' value='nothing'>
+            <MenuItem value='source'>Source</MenuItem>
+            <MenuItem value='source'>Source</MenuItem>
+            <MenuItem value='source'>Source</MenuItem>
+            <MenuItem value='source'>Source</MenuItem>
+          </SelectDropdown>
+          <SelectCategory>Select Category</SelectCategory>
+          <SelectDropdown variant='outlined' value='nothing'>
+            <MenuItem value='source'>Source</MenuItem>
+            <MenuItem value='source'>Source</MenuItem>
+            <MenuItem value='source'>Source</MenuItem>
+            <MenuItem value='source'>Source</MenuItem>
+          </SelectDropdown>
+        </FormControl>
+        <Button onClick={toggleDrawer(anchor, false)}>Apply Settings</Button>
+      </Wrap>
+    </div>
+  );
 
-  onChange = (e) => {
-    this.setState({
-      placement: e.target.value,
-    });
-  };
-
-  render() {
-    const { placement, visible } = this.state;
-    return (
-      <>
-        <Space>
-          <Radio.Group
-            defaultValue={placement}
-            onChange={this.onChange}></Radio.Group>
+  return (
+    <div>
+      {['right'].map((anchor) => (
+        <React.Fragment key={anchor}>
           <IconButton>
             <MoreVertIcon
-              type='primary'
-              onClick={this.showDrawer}
               style={{ fontSize: 34 }}
-            />
+              onClick={toggleDrawer(anchor, true)}>
+              {anchor}
+            </MoreVertIcon>
           </IconButton>
-        </Space>
-        <Drawer
-          title='My Preferences'
-          placement={placement}
-          closable={false}
-          onClose={this.onClose}
-          visible={visible}
-          key={placement}>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-          <p>Some contents...</p>
-        </Drawer>
-      </>
-    );
-  }
+          <Drawer
+            anchor={anchor}
+            open={state[anchor]}
+            onClose={toggleDrawer(anchor, false)}>
+            {list(anchor)}
+          </Drawer>
+        </React.Fragment>
+      ))}
+    </div>
+  );
 }
-export default UserSettings;
+
+// const Select = styled.select``;
+
+const SelectDropdown = styled(Select)`
+  margin: 10px 10px;
+`;
+
+const Wrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
+
+const Settings = styled.h1`
+  padding: 10px;
+`;
+
+const SelectSource = styled.h2`
+  padding: 10px;
+`;
+
+const SelectCategory = styled.h2`
+  padding: 10px;
+`;
+
+const Button = styled.button`
+  justify-content: center;
+  align-content: center;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
+  background: ${COLORS.secondary};
+  color: white;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 30px 40px;
+  border: 0px;
+  outline: none;
+  font-size: 20px;
+  font-weight: bold;
+  cursor: pointer;
+`;

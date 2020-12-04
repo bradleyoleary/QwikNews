@@ -3,12 +3,15 @@ import styled from 'styled-components';
 import LanguageIcon from '@material-ui/icons/Language';
 import UserProfile from './UserProfile';
 import UserSettings from './UserSettings';
+import { Link } from 'react-router-dom';
 
 const Header = () => {
   return (
     <Wrapper>
       <UserProfile />
-      <LanguageIcon style={{ fontSize: 34, color: '#4a56e2' }} />
+      <Link to='/'>
+        <LanguageIcon style={{ fontSize: 34, color: '#4a56e2' }} />
+      </Link>
       <UserSettings />
     </Wrapper>
   );

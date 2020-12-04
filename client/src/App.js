@@ -6,7 +6,7 @@ import NewsCards from './Components/NewsCards';
 import SwipeButtons from './Components/SwipeButtons';
 import GlobalStyles from './Styles/GlobalStyles';
 
-function App() {
+const App = () => {
   return (
     <>
       <Router>
@@ -24,6 +24,6 @@ function App() {
       </Router>
     </>
   );
-}
+};
 
 export default App;
