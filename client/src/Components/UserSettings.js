@@ -60,6 +60,8 @@ export default function UserSettings() {
             <MenuItem value='source'>Source</MenuItem>
             <MenuItem value='source'>Source</MenuItem>
           </SelectDropdown>
+        </FormControl>
+        <FormControl>
           <SelectCategory>Select Category</SelectCategory>
           <SelectDropdown variant='outlined' value='nothing'>
             <MenuItem value='source'>Source</MenuItem>
@@ -68,7 +70,9 @@ export default function UserSettings() {
             <MenuItem value='source'>Source</MenuItem>
           </SelectDropdown>
         </FormControl>
-        <Button onClick={toggleDrawer(anchor, false)}>Apply Settings</Button>
+        <div onClick={toggleDrawer(anchor, false)}>
+          <Button>Apply Settings</Button>
+        </div>
       </Wrap>
     </div>
   );
