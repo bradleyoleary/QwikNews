@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import clsx from 'clsx';
 import {
@@ -13,6 +13,7 @@ import {
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { COLORS } from '../Styles/Constants';
+import { fetchNewsSources } from '../API/Api';
 
 const useStyles = makeStyles({
   list: {
@@ -28,6 +29,14 @@ export default function UserSettings() {
   const [state, setState] = React.useState({
     right: false,
   });
+  const [newsSources, setNewsSources] = useState([]);
+
+  useEffect(() => {
+    const fetchAPI = async () => {
+      setNewsSources(await fetchNewsSources());
+    };
+    fetchAPI();
+  }, []);
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
@@ -53,23 +62,27 @@ export default function UserSettings() {
       <Divider />
       <Wrap>
         <SelectSource>Select Source</SelectSource>
+
         <FormControl className='app__dropdown'>
-          <SelectDropdown variant='outlined' value='nothing'>
-            <MenuItem value='source'>Source</MenuItem>
-            <MenuItem value='source'>Source</MenuItem>
-            <MenuItem value='source'>Source</MenuItem>
-            <MenuItem value='source'>Source</MenuItem>
+          <SelectDropdown variant='outlined' value=''>
+            {/* looping through all sources to show in the dropdown */}
+            {newsSources.map((sources) => {
+              <MenuItem>{sources.name}</MenuItem>;
+              console.log(sources.name);
+            })}
+            <MenuItem value='test'>TEST</MenuItem>
+            <MenuItem value='worldwide'>ANOTHER TEST</MenuItem>
           </SelectDropdown>
         </FormControl>
+
         <FormControl>
           <SelectCategory>Select Category</SelectCategory>
-          <SelectDropdown variant='outlined' value='nothing'>
-            <MenuItem value='source'>Source</MenuItem>
-            <MenuItem value='source'>Source</MenuItem>
-            <MenuItem value='source'>Source</MenuItem>
-            <MenuItem value='source'>Source</MenuItem>
+          <SelectDropdown variant='outlined' value=''>
+            <MenuItem value='test'>TEST</MenuItem>
+            <MenuItem value='test'>TEST</MenuItem>
           </SelectDropdown>
         </FormControl>
+
         <div onClick={toggleDrawer(anchor, false)}>
           <Button>Apply Settings</Button>
         </div>
@@ -125,15 +138,12 @@ const SelectCategory = styled.h2`
 `;
 
 const Button = styled.button`
-  justify-content: center;
-  align-content: center;
   display: flex;
-  align-items: center;
   margin-top: 20px;
   background: ${COLORS.secondary};
   color: white;
   border-radius: 5px;
-  padding: 10px;
+  padding: 15px;
   margin: 30px 40px;
   border: 0px;
   outline: none;

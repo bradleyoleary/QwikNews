@@ -115,9 +115,7 @@ const Bookmarks = styled.p`
 
 const Button = styled.button`
   justify-content: center;
-  align-content: center;
   display: flex;
-  align-items: center;
   margin-top: 20px;
   background: #ff4757;
   color: white;
