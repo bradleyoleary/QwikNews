@@ -11,9 +11,9 @@ function App() {
     <>
       <Router>
         <GlobalStyles />
+        <Header />
         <Switch>
           <Route exact path='/'>
-            <Header />
             <NewsCards />
             <SwipeButtons />
           </Route>

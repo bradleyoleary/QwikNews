@@ -49,7 +49,7 @@ const Card = styled.div`
   padding: 20px;
   max-width: 85vw;
   height: 60vh;
-  border-radius: 16px;
+  border-radius: 18px;
   background-size: cover;
   background-position: center;
   /* box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 6px 6px rgba(0, 0, 0, 0.23); //Need to fix shadow */

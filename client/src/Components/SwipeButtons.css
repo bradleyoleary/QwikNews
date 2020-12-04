@@ -4,7 +4,7 @@
   display: flex;
   justify-content: space-evenly;
   width: 100%;
-  bottom: 7vh;
+  bottom: 8vh;
 }
 
 .swipeButtons .MuiIconButton-root {
