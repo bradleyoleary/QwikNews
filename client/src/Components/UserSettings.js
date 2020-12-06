@@ -30,7 +30,9 @@ export default function UserSettings() {
     right: false,
   });
   const [newsSources, setNewsSources] = useState([]);
+  const [sources, setSources] = useState('allArticles');
 
+  //fetching sources
   useEffect(() => {
     const fetchAPI = async () => {
       setNewsSources(await fetchNewsSources());
@@ -49,6 +51,12 @@ export default function UserSettings() {
     setState({ ...state, [anchor]: open });
   };
 
+  const onSourceChange = async (ev) => {
+    const sourceCode = ev.target.value;
+    // console.log('This thing working?', sourceCode);
+    setSources(sourceCode);
+  };
+
   const list = (anchor) => (
     <div
       className={clsx(classes.list, {
@@ -63,18 +71,30 @@ export default function UserSettings() {
       <Wrap>
         <SelectSource>Select Source</SelectSource>
         {/* need to place an onChange in here to be fired when a menu item is selected */}
-        <SelectDropdown variant='outlined' value=''>
-          {/* looping through all sources to show in the dropdown */}
-          {newsSources.map((sources) => {
-            return <MenuItem value={sources.name}>{sources.name}</MenuItem>;
-          })}
-        </SelectDropdown>
-
         <FormControl>
-          <SelectCategory>Select Category</SelectCategory>
+          <SelectDropdown
+            variant='outlined'
+            value={sources}
+            onChange={onSourceChange}>
+            {/* looping through all sources to show in the dropdown */}
+            <MenuItem value='allArticles'>All Articles</MenuItem>
+            {newsSources.map((sources) => {
+              return <MenuItem value={sources.name}>{sources.name}</MenuItem>;
+            })}
+          </SelectDropdown>
+        </FormControl>
+
+        <SelectSource>Select Category</SelectSource>
+        {/* need to place an onChange in here to be fired when a menu item is selected */}
+        <FormControl>
           <SelectDropdown variant='outlined' value=''>
-            <MenuItem value='test'>TEST</MenuItem>
-            <MenuItem value='test'>TEST</MenuItem>
+            {/* looping through all sources categories to show in the dropdown. This needs to be fixed to show each cat, not each cat for every article. */}
+            <MenuItem value='allCategories'>All Categories</MenuItem>
+            {newsSources.map((source) => {
+              return (
+                <MenuItem value={source.category}>{source.category}</MenuItem>
+              );
+            })}
           </SelectDropdown>
         </FormControl>
 
@@ -128,9 +148,9 @@ const SelectSource = styled.h2`
   padding: 10px;
 `;
 
-const SelectCategory = styled.h2`
-  padding: 10px;
-`;
+// const SelectCategory = styled.h2`
+//   padding: 10px;
+// `;
 
 const Button = styled.button`
   display: flex;

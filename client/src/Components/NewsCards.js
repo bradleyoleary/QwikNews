@@ -19,7 +19,9 @@ const NewsCards = () => {
       <CardContainer>
         {newsArticles.map((article) => (
           <NewsCard key={article.title} preventSwipe={['up', 'down']}>
-            <Card style={{ backgroundImage: `url(${article.urlToImage})` }}>
+            <Card
+              style={{ backgroundImage: `url(${article.urlToImage})` }}
+              onClick={() => window.open(article.url, '_blank')}>
               <BottomContainer>
                 <ArticleSource>{article.source.name}</ArticleSource>
                 <ArticleName>{article.title}</ArticleName>

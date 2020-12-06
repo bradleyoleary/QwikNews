@@ -10,7 +10,7 @@ export const fetchNews = async () => {
     } = await Axios.get(
       `${url}/top-headlines?country=us&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
     );
-    //console.log(articles);
+    console.log(articles);
 
     return articles.map((article) => article);
   } catch (error) {
