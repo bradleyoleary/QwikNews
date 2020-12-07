@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { COLORS } from '../Styles/Constants';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import clsx from 'clsx';
 import {
   makeStyles,
@@ -11,6 +11,8 @@ import {
   IconButton,
 } from '@material-ui/core';
 import PersonIcon from '@material-ui/icons/Person';
+import { Alert } from 'react-bootstrap';
+import { useAuth } from '../Context/AuthContext';
 
 const useStyles = makeStyles({
   list: {
@@ -23,6 +25,9 @@ const useStyles = makeStyles({
 
 export default function UserProfile() {
   const classes = useStyles();
+  const [error, setError] = useState('');
+  const { currentUser, logout } = useAuth();
+  const history = useHistory();
   const [state, setState] = React.useState({
     bottom: false,
   });
@@ -38,6 +43,17 @@ export default function UserProfile() {
     setState({ ...state, [anchor]: open });
   };
 
+  async function handleLogout() {
+    setError('');
+
+    try {
+      await logout();
+      history.push('/login');
+    } catch {
+      setError('Failed to log out.');
+    }
+  }
+
   const list = (anchor) => (
     <div
       className={clsx(classes.list, {
@@ -47,7 +63,8 @@ export default function UserProfile() {
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}>
       <List>
-        <Profile>My Profile</Profile>
+        <Profile>My Profile: {currentUser.email}</Profile>
+        {error && <Alert variant='danger'>{error}</Alert>}
       </List>
       <Divider />
       <Wrap>
@@ -57,7 +74,7 @@ export default function UserProfile() {
         <LinkToPages to='/bookmarks'>
           <Bookmarks>My Bookmarks</Bookmarks>
         </LinkToPages>
-        <Button>Sign Out</Button>
+        <Button onClick={handleLogout}>Sign Out</Button>
       </Wrap>
     </div>
   );

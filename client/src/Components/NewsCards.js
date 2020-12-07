@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import TinderCard from 'react-tinder-card';
 import { fetchNews } from '../API/Api';
+import { useHistory } from 'react-router-dom';
 
 const NewsCards = () => {
   const [newsArticles, setNewsArticles] = useState([]);
@@ -13,16 +14,23 @@ const NewsCards = () => {
   }, []);
 
   // console.log(newsArticles);
+  let history = useHistory();
+
+  const handleRedirect = () => {
+    history.push(`/article-details`);
+    console.log('redirect');
+  };
 
   return (
     <div>
       <CardContainer>
         {newsArticles.map((article) => (
           <NewsCard key={article.title} preventSwipe={['up', 'down']}>
-            <Card
-              style={{ backgroundImage: `url(${article.urlToImage})` }}
-              onClick={() => window.open(article.url, '_blank')}>
-              <BottomContainer>
+            <Card style={{ backgroundImage: `url(${article.urlToImage})` }}>
+              <BottomContainer
+                onClick={() => {
+                  handleRedirect();
+                }}>
                 <ArticleSource>{article.source.name}</ArticleSource>
                 <ArticleName>{article.title}</ArticleName>
                 {/* <ArticleDescription>{article.description}</ArticleDescription> */}
@@ -89,6 +97,13 @@ const BottomContainer = styled.div`
   border-radius: 12px;
   justify-content: center;
   border: 3px solid #24cca7; //Temp fix to the shadow issue
+  transition: 0.2s;
+
+  &:hover {
+    transform: scale(1.01);
+    box-shadow: 0px 0px 76px -11px rgba(36, 204, 167, 0.51);
+    cursor: pointer;
+  }
 `;
 
 export default NewsCards;

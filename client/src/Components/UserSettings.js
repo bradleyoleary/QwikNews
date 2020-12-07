@@ -31,6 +31,7 @@ export default function UserSettings() {
   });
   const [newsSources, setNewsSources] = useState([]);
   const [sources, setSources] = useState('allArticles');
+  const [categories, setCategories] = useState('allCategories');
 
   //fetching sources
   useEffect(() => {
@@ -52,9 +53,15 @@ export default function UserSettings() {
   };
 
   const onSourceChange = async (ev) => {
-    const sourceCode = ev.target.value;
-    // console.log('This thing working?', sourceCode);
-    setSources(sourceCode);
+    const sourceVal = ev.target.value;
+    // console.log('This thing working?', sourceVal);
+    setSources(sourceVal);
+  };
+
+  const onCategoryChange = async (ev) => {
+    const categoryVal = ev.target.value;
+    // console.log('This thing working?', categoryVal);
+    setCategories(categoryVal);
   };
 
   const list = (anchor) => (
@@ -87,7 +94,10 @@ export default function UserSettings() {
         <SelectSource>Select Category</SelectSource>
         {/* need to place an onChange in here to be fired when a menu item is selected */}
         <FormControl>
-          <SelectDropdown variant='outlined' value=''>
+          <SelectDropdown
+            variant='outlined'
+            value={categories}
+            onChange={onCategoryChange}>
             {/* looping through all sources categories to show in the dropdown. This needs to be fixed to show each cat, not each cat for every article. */}
             <MenuItem value='allCategories'>All Categories</MenuItem>
             {newsSources.map((source) => {
