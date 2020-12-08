@@ -12,52 +12,55 @@ import PrivateRoute from './Components/PrivateRoute';
 import Homepage from './Components/Homepage';
 import ForgotPassword from './Components/ForgotPassword';
 import { ArticleDetailsProvider } from './Context/ArticleDetailsContext';
+import UserSettingsProvider from './Components/UserSettings';
 
 const App = () => {
   return (
     <>
       <Router>
         <GlobalStyles />
-        <Switch>
-          <Route path='/sign-up'>
-            <Container
-              className='d-flex align-items-center justify-content-center'
-              style={{ minHeight: '80vh' }}>
-              <div className='w-100' style={{ maxWidth: '500px' }}>
-                <Signup />
-              </div>
-            </Container>
-          </Route>
-          <Route path='/login'>
-            <Container
-              className='d-flex align-items-center justify-content-center'
-              style={{ minHeight: '80vh' }}>
-              <div className='w-100' style={{ maxWidth: '500px' }}>
-                <Login />
-              </div>
-            </Container>
-          </Route>
-          <Route path='/forgot-password'>
-            <Container
-              className='d-flex align-items-center justify-content-center'
-              style={{ minHeight: '80vh' }}>
-              <div className='w-100' style={{ maxWidth: '500px' }}>
-                <ForgotPassword />
-              </div>
-            </Container>
-          </Route>
-          <ArticleDetailsProvider>
-            <PrivateRoute exact path='/' component={Homepage}></PrivateRoute>
-            <Route path='/bookmarks'>
-              <Header />
-              <Bookmarks />
+        <UserSettingsProvider>
+          <Switch>
+            <Route path='/sign-up'>
+              <Container
+                className='d-flex align-items-center justify-content-center'
+                style={{ minHeight: '80vh' }}>
+                <div className='w-100' style={{ maxWidth: '500px' }}>
+                  <Signup />
+                </div>
+              </Container>
             </Route>
-            <Route path='/article-details'>
-              <Header />
-              <ArticleDetails />
+            <Route path='/login'>
+              <Container
+                className='d-flex align-items-center justify-content-center'
+                style={{ minHeight: '80vh' }}>
+                <div className='w-100' style={{ maxWidth: '500px' }}>
+                  <Login />
+                </div>
+              </Container>
             </Route>
-          </ArticleDetailsProvider>
-        </Switch>
+            <Route path='/forgot-password'>
+              <Container
+                className='d-flex align-items-center justify-content-center'
+                style={{ minHeight: '80vh' }}>
+                <div className='w-100' style={{ maxWidth: '500px' }}>
+                  <ForgotPassword />
+                </div>
+              </Container>
+            </Route>
+            <ArticleDetailsProvider>
+              <PrivateRoute exact path='/' component={Homepage}></PrivateRoute>
+              <Route path='/bookmarks'>
+                <Header />
+                <Bookmarks />
+              </Route>
+              <Route path='/article-details'>
+                <Header />
+                <ArticleDetails />
+              </Route>
+            </ArticleDetailsProvider>
+          </Switch>
+        </UserSettingsProvider>
       </Router>
     </>
   );

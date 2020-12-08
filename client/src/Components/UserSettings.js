@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, createContext } from 'react';
 import styled from 'styled-components';
 import clsx from 'clsx';
 import {
@@ -6,12 +6,10 @@ import {
   Drawer,
   List,
   Divider,
-  IconButton,
   MenuItem,
   FormControl,
   Select,
 } from '@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { COLORS } from '../Styles/Constants';
 import { SourceContext } from '../Context/SourceContext';
 
@@ -34,15 +32,16 @@ const categoryFilter = {
   Technology: 'technology',
 };
 
-const UserSettings = () => {
+const UserSettingsContext = createContext({ currentSource: 'allSources' });
+
+const UserSettingsProvider = ({ children }) => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     right: false,
   });
-  // const [newsSources, setNewsSources] = useState([]);
-  const [sources, setSources] = useState('allSources');
-  const [categories, setCategories] = useState('allCategories');
+  const [currentSource, setCurrentSource] = useState('allSources');
   const [sourceInfo, setSourceInfo] = useState({});
+  const [categories, setCategories] = useState('allCategories');
   const [categoryInfo, setCategoryInfo] = useState({});
   const { sourceData } = useContext(SourceContext);
 
@@ -60,21 +59,9 @@ const UserSettings = () => {
 
   //api call for when a user selects a specific source
   const onSourceChange = async (ev) => {
-    const siteUrl = 'https://newsapi.org/v2';
     const sourceVal = ev.target.value;
-    setSources(sourceVal);
-    // console.log('This thing working?', sourceVal);
-    const url =
-      sourceVal === 'allSources'
-        ? `${siteUrl}/top-headlines?country=us&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
-        : `${siteUrl}/top-headlines?sources=${sourceVal}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`;
-    await fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        // console.log(data);
-        setSources(sourceVal);
-        setSourceInfo(data);
-      });
+    setCurrentSource(sourceVal);
+    console.log('This thing working?', sourceVal);
   };
 
   console.log('HERE IS THE SOURCE INFO', sourceInfo);
@@ -88,7 +75,7 @@ const UserSettings = () => {
     const url =
       categoryVal === 'allCategories'
         ? `${siteUrl}/top-headlines?country=us&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
-        : `${siteUrl}/top-headlines?category=${categoryVal}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`;
+        : `${siteUrl}/top-headlines?country=us&category=${categoryVal}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`;
     await fetch(url)
       .then((res) => res.json())
       .then((data) => {
@@ -117,15 +104,13 @@ const UserSettings = () => {
         <FormControl>
           <SelectDropdown
             variant='outlined'
-            value={sources}
+            value={currentSource}
             onChange={onSourceChange}>
             {/* looping through all sources to show in the dropdown */}
             <MenuItem value='allSources'>All Sources</MenuItem>
             {sourceData
               ? sourceData.sources.map((sources) => {
-                  return (
-                    <MenuItem value={sources.name}>{sources.name}</MenuItem>
-                  );
+                  return <MenuItem value={sources.id}>{sources.id}</MenuItem>;
                 })
               : 'loading'}
           </SelectDropdown>
@@ -145,35 +130,34 @@ const UserSettings = () => {
             })}
           </SelectDropdown>
         </FormControl>
-
-        <div onClick={toggleDrawer(anchor, false)}>
-          <Button>Apply Settings</Button>
-        </div>
+        <ButtonWrap onClick={toggleDrawer(anchor, false)}>
+          <Button>Close</Button>
+        </ButtonWrap>
       </Wrap>
     </div>
   );
 
   return (
-    <div>
-      {['right'].map((anchor) => (
-        <React.Fragment key={anchor}>
-          <IconButton>
-            <MoreVertIcon
-              style={{ fontSize: 34 }}
-              onClick={toggleDrawer(anchor, true)}>
-              {anchor}
-            </MoreVertIcon>
-          </IconButton>
-          <Drawer
-            anchor={anchor}
-            open={state[anchor]}
-            onClose={toggleDrawer(anchor, false)}>
-            {list(anchor)}
-          </Drawer>
-        </React.Fragment>
-      ))}
-    </div>
+    <UserSettingsContext.Provider value={{ currentSource, toggleDrawer }}>
+      <>
+        {children}
+        <div>
+          <React.Fragment>
+            <Drawer
+              anchor={'bottom'}
+              open={state['bottom']}
+              onClose={toggleDrawer('bottom', false)}>
+              {list('bottom')}
+            </Drawer>
+          </React.Fragment>
+        </div>
+      </>
+    </UserSettingsContext.Provider>
   );
+};
+
+export const useUserSettings = () => {
+  return useContext(UserSettingsContext);
 };
 
 const SelectDropdown = styled(Select)`
@@ -194,14 +178,22 @@ const SelectSource = styled.h2`
   padding: 10px;
 `;
 
+const ButtonWrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 10px;
+`;
+
 const Button = styled.button`
+  justify-content: center;
   display: flex;
   margin-top: 20px;
   background: ${COLORS.secondary};
   color: white;
   border-radius: 5px;
   padding: 15px;
-  margin: 30px 40px;
+  margin: 30px 50px;
   border: 0px;
   outline: none;
   font-size: 20px;
@@ -209,4 +201,4 @@ const Button = styled.button`
   cursor: pointer;
 `;
 
-export default UserSettings;
+export default UserSettingsProvider;

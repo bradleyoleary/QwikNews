@@ -1,15 +1,30 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import Axios from 'axios';
 import styled from 'styled-components';
 import TinderCard from 'react-tinder-card';
 import { useHistory } from 'react-router-dom';
-import { NewsApiContext } from '../Context/NewsApiContext';
 import Loader from './Loader';
 import { ArticleDetailsContext } from '../Context/ArticleDetailsContext';
+import { useUserSettings } from './UserSettings';
 
 const NewsCards = () => {
-  const { data } = useContext(NewsApiContext);
   const { setArticleUrl } = useContext(ArticleDetailsContext);
+  const { currentSource } = useUserSettings();
   let history = useHistory();
+  const [data, setData] = useState();
+  const url = 'https://newsapi.org/v2';
+
+  useEffect(() => {
+    console.log(currentSource);
+    Axios.get(
+      `${url}/everything?sources=${currentSource}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
+    )
+      .then((res) => {
+        setData(res.data);
+        console.log(res.data);
+      })
+      .catch((error) => console.log(error));
+  }, [currentSource]);
 
   const handleRedirect = (url) => {
     setArticleUrl(url);
