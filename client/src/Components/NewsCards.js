@@ -1,19 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import TinderCard from 'react-tinder-card';
-import { fetchNews } from '../API/Api';
 import { useHistory } from 'react-router-dom';
+import { NewsApiContext } from '../Context/NewsApiContext';
 
 const NewsCards = () => {
-  const [newsArticles, setNewsArticles] = useState([]);
-  useEffect(() => {
-    const fetchAPI = async () => {
-      setNewsArticles(await fetchNews());
-    };
-    fetchAPI();
-  }, []);
-
-  // console.log(newsArticles);
+  const { data } = useContext(NewsApiContext);
   let history = useHistory();
 
   const handleRedirect = () => {
@@ -24,20 +16,21 @@ const NewsCards = () => {
   return (
     <div>
       <CardContainer>
-        {newsArticles.map((article) => (
-          <NewsCard key={article.title} preventSwipe={['up', 'down']}>
-            <Card style={{ backgroundImage: `url(${article.urlToImage})` }}>
-              <BottomContainer
-                onClick={() => {
-                  handleRedirect();
-                }}>
-                <ArticleSource>{article.source.name}</ArticleSource>
-                <ArticleName>{article.title}</ArticleName>
-                {/* <ArticleDescription>{article.description}</ArticleDescription> */}
-              </BottomContainer>
-            </Card>
-          </NewsCard>
-        ))}
+        {data
+          ? data.articles.map((article) => (
+              <NewsCard key={article.title} preventSwipe={['up', 'down']}>
+                <Card style={{ backgroundImage: `url(${article.urlToImage})` }}>
+                  <BottomContainer
+                    onClick={() => {
+                      handleRedirect();
+                    }}>
+                    <ArticleSource>{article.source.name}</ArticleSource>
+                    <ArticleName>{article.title}</ArticleName>
+                  </BottomContainer>
+                </Card>
+              </NewsCard>
+            ))
+          : 'loading'}
       </CardContainer>
     </div>
   );
@@ -76,11 +69,6 @@ const ArticleName = styled.p`
   font-weight: 500;
   color: #303030;
 `;
-
-// const ArticleDescription = styled.p`
-//   display: flex;
-//   padding-top: 6px;
-// `;
 
 const BottomContainer = styled.div`
   position: absolute;

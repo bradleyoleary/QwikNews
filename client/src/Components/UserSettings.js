@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useContext } from 'react';
 import styled from 'styled-components';
 import clsx from 'clsx';
 import {
@@ -13,7 +13,7 @@ import {
 } from '@material-ui/core';
 import MoreVertIcon from '@material-ui/icons/MoreVert';
 import { COLORS } from '../Styles/Constants';
-import { fetchNewsSources } from '../API/Api';
+import { SourceContext } from '../Context/SourceContext';
 
 const useStyles = makeStyles({
   list: {
@@ -24,23 +24,29 @@ const useStyles = makeStyles({
   },
 });
 
-export default function UserSettings() {
+const categoryFilter = {
+  Business: 'business',
+  Entertainment: 'entertainment',
+  General: ' general',
+  Health: 'health',
+  Science: 'science',
+  Sports: 'sports',
+  Technology: 'technology',
+};
+
+const UserSettings = () => {
   const classes = useStyles();
   const [state, setState] = React.useState({
     right: false,
   });
-  const [newsSources, setNewsSources] = useState([]);
-  const [sources, setSources] = useState('allArticles');
+  // const [newsSources, setNewsSources] = useState([]);
+  const [sources, setSources] = useState('allSources');
   const [categories, setCategories] = useState('allCategories');
+  const [sourceInfo, setSourceInfo] = useState({});
+  const [categoryInfo, setCategoryInfo] = useState({});
+  const { sourceData } = useContext(SourceContext);
 
-  //fetching sources
-  useEffect(() => {
-    const fetchAPI = async () => {
-      setNewsSources(await fetchNewsSources());
-    };
-    fetchAPI();
-  }, []);
-
+  //material-ui drawer
   const toggleDrawer = (anchor, open) => (event) => {
     if (
       event.type === 'keydown' &&
@@ -52,17 +58,47 @@ export default function UserSettings() {
     setState({ ...state, [anchor]: open });
   };
 
+  //api call for when a user selects a specific source
   const onSourceChange = async (ev) => {
+    const siteUrl = 'https://newsapi.org/v2';
     const sourceVal = ev.target.value;
-    // console.log('This thing working?', sourceVal);
     setSources(sourceVal);
+    // console.log('This thing working?', sourceVal);
+    const url =
+      sourceVal === 'allSources'
+        ? `${siteUrl}/top-headlines?country=us&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
+        : `${siteUrl}/top-headlines?sources=${sourceVal}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`;
+    await fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        // console.log(data);
+        setSources(sourceVal);
+        setSourceInfo(data);
+      });
   };
 
+  console.log('HERE IS THE SOURCE INFO', sourceInfo);
+
+  //api call for when a user selects a specific category
   const onCategoryChange = async (ev) => {
+    const siteUrl = 'https://newsapi.org/v2';
     const categoryVal = ev.target.value;
-    // console.log('This thing working?', categoryVal);
     setCategories(categoryVal);
+    // console.log('This thing working?', categoryVal);
+    const url =
+      categoryVal === 'allCategories'
+        ? `${siteUrl}/top-headlines?country=us&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
+        : `${siteUrl}/top-headlines?category=${categoryVal}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`;
+    await fetch(url)
+      .then((res) => res.json())
+      .then((data) => {
+        console.log(data);
+        setCategories(categoryVal);
+        setCategoryInfo(data);
+      });
   };
+
+  console.log('HERE IS THE CATEGORY INFO', categoryInfo);
 
   const list = (anchor) => (
     <div
@@ -84,10 +120,14 @@ export default function UserSettings() {
             value={sources}
             onChange={onSourceChange}>
             {/* looping through all sources to show in the dropdown */}
-            <MenuItem value='allArticles'>All Articles</MenuItem>
-            {newsSources.map((sources) => {
-              return <MenuItem value={sources.name}>{sources.name}</MenuItem>;
-            })}
+            <MenuItem value='allSources'>All Sources</MenuItem>
+            {sourceData
+              ? sourceData.sources.map((sources) => {
+                  return (
+                    <MenuItem value={sources.name}>{sources.name}</MenuItem>
+                  );
+                })
+              : 'loading'}
           </SelectDropdown>
         </FormControl>
 
@@ -100,10 +140,8 @@ export default function UserSettings() {
             onChange={onCategoryChange}>
             {/* looping through all sources categories to show in the dropdown. This needs to be fixed to show each cat, not each cat for every article. */}
             <MenuItem value='allCategories'>All Categories</MenuItem>
-            {newsSources.map((source) => {
-              return (
-                <MenuItem value={source.category}>{source.category}</MenuItem>
-              );
+            {Object.keys(categoryFilter).map((key) => {
+              return <MenuItem value={key}>{key}</MenuItem>;
             })}
           </SelectDropdown>
         </FormControl>
@@ -136,9 +174,7 @@ export default function UserSettings() {
       ))}
     </div>
   );
-}
-
-// const Select = styled.select``;
+};
 
 const SelectDropdown = styled(Select)`
   margin: 10px 10px;
@@ -158,10 +194,6 @@ const SelectSource = styled.h2`
   padding: 10px;
 `;
 
-// const SelectCategory = styled.h2`
-//   padding: 10px;
-// `;
-
 const Button = styled.button`
   display: flex;
   margin-top: 20px;
@@ -176,3 +208,5 @@ const Button = styled.button`
   font-weight: bold;
   cursor: pointer;
 `;
+
+export default UserSettings;
