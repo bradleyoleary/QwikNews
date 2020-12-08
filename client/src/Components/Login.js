@@ -32,24 +32,32 @@ export default function Login() {
   return (
     <>
       <TitleDiv>
-        <LanguageIcon style={{ fontSize: 50, color: '#4a56e2' }} />
+        <LanguageIcon style={{ fontSize: 45, color: '#4a56e2' }} />
         <Title>QwikNews</Title>
       </TitleDiv>
       <PicDiv>
         <StyledIllustration />
       </PicDiv>
-      <Card>
+      <Card style={{ padding: '20px' }}>
         <Card.Body>
           <h2 className='text-center mb-4'>Log In</h2>
           {error && <Alert variant='danger'>{error}</Alert>}
           <Form onSubmit={handleSubmit}>
-            <Form.Group id='email'>
-              <Form.Label>Email</Form.Label>
-              <Form.Control type='email' ref={emailRef} required />
+            <Form.Group id='email' style={{ paddingBottom: '20px' }}>
+              <Form.Control
+                placeholder='Email'
+                type='email'
+                ref={emailRef}
+                required
+              />
             </Form.Group>
-            <Form.Group id='password'>
-              <Form.Label>Password</Form.Label>
-              <Form.Control type='password' ref={passwordRef} required />
+            <Form.Group id='password' style={{ paddingBottom: '20px' }}>
+              <Form.Control
+                placeholder='Password'
+                type='password'
+                ref={passwordRef}
+                required
+              />
             </Form.Group>
             <Button
               disabled={loading}
@@ -59,12 +67,14 @@ export default function Login() {
               Log In
             </Button>
           </Form>
-          <div className='w-100 text-center mt-3'>
+          <div
+            className='w-100 text-center mt-3'
+            style={{ paddingTop: '20px' }}>
             <Link to='/forgot-password'>Forgot Password?</Link>{' '}
           </div>
         </Card.Body>
       </Card>
-      <div className='w-100 text-center mt-2'>
+      <div className='w-100 text-center mt-2' style={{ paddingTop: '20px' }}>
         Need an account? <Link to='/sign-up'>Sign Up</Link>
       </div>
     </>
@@ -81,7 +91,7 @@ const PicDiv = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 50px;
+  font-size: 45px;
   padding-left: 10px;
 `;
 

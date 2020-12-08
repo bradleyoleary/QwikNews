@@ -38,15 +38,19 @@ export default function ForgotPassword() {
       <PicDiv>
         <StyledIllustration />
       </PicDiv>
-      <Card>
+      <Card style={{ padding: '20px' }}>
         <Card.Body>
           <h2 className='text-center mb-4'>Password Reset</h2>
           {error && <Alert variant='danger'>{error}</Alert>}
           {message && <Alert variant='success'>{message}</Alert>}
           <Form onSubmit={handleSubmit}>
-            <Form.Group id='email'>
-              <Form.Label>Email</Form.Label>
-              <Form.Control type='email' ref={emailRef} required />
+            <Form.Group id='email' style={{ paddingBottom: '20px' }}>
+              <Form.Control
+                placeholder='Email'
+                type='email'
+                ref={emailRef}
+                required
+              />
             </Form.Group>
             <Button
               disabled={loading}
@@ -56,12 +60,14 @@ export default function ForgotPassword() {
               Reset Password
             </Button>
           </Form>
-          <div className='w-100 text-center mt-3'>
+          <div
+            className='w-100 text-center mt-3'
+            style={{ paddingTop: '20px' }}>
             <Link to='/login'>Log In</Link>{' '}
           </div>
         </Card.Body>
       </Card>
-      <div className='w-100 text-center mt-2'>
+      <div className='w-100 text-center mt-2' style={{ paddingTop: '20px' }}>
         Need an account? <Link to='/sign-up'>Sign Up</Link>
       </div>
     </>

@@ -1,15 +1,13 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import styled from 'styled-components';
 import Iframe from 'react-iframe';
+import { ArticleDetailsContext } from '../Context/ArticleDetailsContext';
+import { useParams } from 'react-router-dom';
 
 const ArticleDetails = () => {
-  return (
-    <Window
-      url='https://newsapi.org/docs/endpoints/top-headlines'
-      display='initial'
-      position='relative'
-    />
-  );
+  const { articleUrl } = useContext(ArticleDetailsContext);
+  console.log(articleUrl);
+  return <Window url={articleUrl} display='initial' position='relative' />;
 };
 
 const Window = styled(Iframe)`

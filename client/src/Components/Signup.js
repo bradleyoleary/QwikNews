@@ -37,28 +37,40 @@ export default function Signup() {
   return (
     <>
       <TitleDiv>
-        <LanguageIcon style={{ fontSize: 50, color: '#4a56e2' }} />
+        <LanguageIcon style={{ fontSize: 45, color: '#4a56e2' }} />
         <Title>QwikNews</Title>
       </TitleDiv>
       <PicDiv>
         <StyledIllustration />
       </PicDiv>
-      <Card>
+      <Card style={{ padding: '20px' }}>
         <Card.Body>
-          <h2 className='text-center mb-4'>Sign Up</h2>
+          <BoxTitle className='text-center mb-4'>Sign Up</BoxTitle>
           {error && <Alert variant='danger'>{error}</Alert>}
           <Form onSubmit={handleSubmit}>
-            <Form.Group id='email'>
-              <Form.Label>Email</Form.Label>
-              <Form.Control type='email' ref={emailRef} required />
+            <Form.Group id='email' style={{ paddingBottom: '20px' }}>
+              <Form.Control
+                placeholder='Email'
+                type='email'
+                ref={emailRef}
+                required
+              />
             </Form.Group>
-            <Form.Group id='password'>
-              <Form.Label>Password</Form.Label>
-              <Form.Control type='password' ref={passwordRef} required />
+            <Form.Group id='password' style={{ paddingBottom: '20px' }}>
+              <Form.Control
+                placeholder='Password'
+                type='password'
+                ref={passwordRef}
+                required
+              />
             </Form.Group>
-            <Form.Group id='password-confirm'>
-              <Form.Label>Password Confirmation</Form.Label>
-              <Form.Control type='password' ref={passwordConfirmRef} required />
+            <Form.Group id='password-confirm' style={{ paddingBottom: '20px' }}>
+              <Form.Control
+                placeholder='Password Confirmation'
+                type='password'
+                ref={passwordConfirmRef}
+                required
+              />
             </Form.Group>
             <Button
               disabled={loading}
@@ -70,12 +82,16 @@ export default function Signup() {
           </Form>
         </Card.Body>
       </Card>
-      <div className='w-100 text-center mt-2'>
+      <div className='w-100 text-center mt-2' style={{ paddingTop: '20px' }}>
         Already have an account? <Link to='/login'>Log In</Link>
       </div>
     </>
   );
 }
+
+const BoxTitle = styled.h1`
+  font-size: 24px;
+`;
 
 const StyledIllustration = styled(Logo)`
   height: 240px;
@@ -87,7 +103,7 @@ const PicDiv = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 50px;
+  font-size: 45px;
   padding-left: 10px;
 `;
 

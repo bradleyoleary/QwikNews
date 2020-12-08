@@ -8,16 +8,14 @@ import { NewsApiProvider } from './Context/NewsApiContext';
 import { SourceProvider } from './Context/SourceContext';
 
 ReactDOM.render(
-  <React.StrictMode>
-    <AuthProvider>
-      <NewsApiProvider>
-        <SourceProvider>
-          <BookmarkProvider initialState={initialState} reducer={reducer}>
-            <App />
-          </BookmarkProvider>
-        </SourceProvider>
-      </NewsApiProvider>
-    </AuthProvider>
-  </React.StrictMode>,
+  <AuthProvider>
+    <NewsApiProvider>
+      <SourceProvider>
+        <BookmarkProvider initialState={initialState} reducer={reducer}>
+          <App />
+        </BookmarkProvider>
+      </SourceProvider>
+    </NewsApiProvider>
+  </AuthProvider>,
   document.getElementById('root')
 );

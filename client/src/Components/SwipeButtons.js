@@ -23,16 +23,16 @@ const SwipeButtons = () => {
         />
       </IconButton>
       <IconButton>
+        <ShareIcon
+          className='swipeButtons__share'
+          style={{ fontSize: 34, color: '#24cca7' }}
+        />
+      </IconButton>
+      <IconButton>
         <BookmarkIcon
           onClick={addToBookmarks}
           className='swipeButtons__bookmark'
           style={{ fontSize: 34, color: '#4a56e2' }}
-        />
-      </IconButton>
-      <IconButton>
-        <ShareIcon
-          className='swipeButtons__share'
-          style={{ fontSize: 34, color: '#24cca7' }}
         />
       </IconButton>
     </div>

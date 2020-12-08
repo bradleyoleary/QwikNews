@@ -11,6 +11,7 @@ import Login from './Components/Login';
 import PrivateRoute from './Components/PrivateRoute';
 import Homepage from './Components/Homepage';
 import ForgotPassword from './Components/ForgotPassword';
+import { ArticleDetailsProvider } from './Context/ArticleDetailsContext';
 
 const App = () => {
   return (
@@ -45,15 +46,17 @@ const App = () => {
               </div>
             </Container>
           </Route>
-          <PrivateRoute exact path='/' component={Homepage}></PrivateRoute>
-          <Route path='/bookmarks'>
-            <Header />
-            <Bookmarks />
-          </Route>
-          <Route path='/article-details'>
-            <Header />
-            <ArticleDetails />
-          </Route>
+          <ArticleDetailsProvider>
+            <PrivateRoute exact path='/' component={Homepage}></PrivateRoute>
+            <Route path='/bookmarks'>
+              <Header />
+              <Bookmarks />
+            </Route>
+            <Route path='/article-details'>
+              <Header />
+              <ArticleDetails />
+            </Route>
+          </ArticleDetailsProvider>
         </Switch>
       </Router>
     </>

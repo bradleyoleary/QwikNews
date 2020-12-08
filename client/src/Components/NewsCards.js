@@ -4,14 +4,17 @@ import TinderCard from 'react-tinder-card';
 import { useHistory } from 'react-router-dom';
 import { NewsApiContext } from '../Context/NewsApiContext';
 import Loader from './Loader';
+import { ArticleDetailsContext } from '../Context/ArticleDetailsContext';
 
 const NewsCards = () => {
   const { data } = useContext(NewsApiContext);
+  const { setArticleUrl } = useContext(ArticleDetailsContext);
   let history = useHistory();
 
-  const handleRedirect = () => {
+  const handleRedirect = (url) => {
+    setArticleUrl(url);
     history.push(`/article-details`);
-    console.log('redirect');
+    // console.log('redirect');
   };
 
   return (
@@ -23,7 +26,7 @@ const NewsCards = () => {
               <Card style={{ backgroundImage: `url(${article.urlToImage})` }}>
                 <BottomContainer
                   onClick={() => {
-                    handleRedirect();
+                    handleRedirect(article.url);
                   }}>
                   <ArticleSource>{article.source.name}</ArticleSource>
                   <ArticleName>{article.title}</ArticleName>
