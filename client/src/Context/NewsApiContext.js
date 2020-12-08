@@ -4,7 +4,6 @@ import React, { createContext, useEffect, useState } from 'react';
 export const NewsApiContext = createContext();
 
 export const NewsApiProvider = (props) => {
-  console.log(props);
   const [data, setData] = useState();
   const url = 'https://newsapi.org/v2';
 
@@ -16,7 +15,7 @@ export const NewsApiProvider = (props) => {
       .catch((error) => console.log(error));
   }, []);
 
-  console.log(data);
+  // console.log(data);
 
   return (
     <NewsApiContext.Provider value={{ data }}>

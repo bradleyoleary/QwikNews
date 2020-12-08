@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import TinderCard from 'react-tinder-card';
 import { useHistory } from 'react-router-dom';
 import { NewsApiContext } from '../Context/NewsApiContext';
+import Loader from './Loader';
 
 const NewsCards = () => {
   const { data } = useContext(NewsApiContext);
@@ -16,21 +17,23 @@ const NewsCards = () => {
   return (
     <div>
       <CardContainer>
-        {data
-          ? data.articles.map((article) => (
-              <NewsCard key={article.title} preventSwipe={['up', 'down']}>
-                <Card style={{ backgroundImage: `url(${article.urlToImage})` }}>
-                  <BottomContainer
-                    onClick={() => {
-                      handleRedirect();
-                    }}>
-                    <ArticleSource>{article.source.name}</ArticleSource>
-                    <ArticleName>{article.title}</ArticleName>
-                  </BottomContainer>
-                </Card>
-              </NewsCard>
-            ))
-          : 'loading'}
+        {data ? (
+          data.articles.map((article) => (
+            <NewsCard key={article.title} preventSwipe={['up', 'down']}>
+              <Card style={{ backgroundImage: `url(${article.urlToImage})` }}>
+                <BottomContainer
+                  onClick={() => {
+                    handleRedirect();
+                  }}>
+                  <ArticleSource>{article.source.name}</ArticleSource>
+                  <ArticleName>{article.title}</ArticleName>
+                </BottomContainer>
+              </Card>
+            </NewsCard>
+          ))
+        ) : (
+          <Loader />
+        )}
       </CardContainer>
     </div>
   );

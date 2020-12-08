@@ -13,7 +13,7 @@ export const SourceProvider = (props) => {
       .catch((error) => console.log(error));
   }, []);
 
-  console.log(sourceData);
+  // console.log(sourceData);
 
   return (
     <SourceContext.Provider value={{ sourceData }}>
