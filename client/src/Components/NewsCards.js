@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState, useMemo } from 'react';
 import Axios from 'axios';
 import styled from 'styled-components';
 import TinderCard from 'react-tinder-card';
@@ -6,52 +6,99 @@ import { useHistory } from 'react-router-dom';
 import Loader from './Loader';
 import { ArticleDetailsContext } from '../Context/ArticleDetailsContext';
 import { useUserSettings } from './UserSettings';
+import CloseIcon from '@material-ui/icons/Close';
+import BookmarkIcon from '@material-ui/icons/Bookmark';
+import IconButton from '@material-ui/core/IconButton';
+import ShareIcon from '@material-ui/icons/Share';
+import './SwipeButtons.css';
+import { useStateValue } from '../Context/BookmarkContext';
 
 const NewsCards = () => {
   const { setArticleUrl } = useContext(ArticleDetailsContext);
   const { currentSource, currentCategory } = useUserSettings();
-  let history = useHistory();
   const [data, setData] = useState();
+  const alreadyRemoved = [];
+  const childRefs = useMemo(
+    () =>
+      Array(data ? data.articles.length : 'loading')
+        .fill(0)
+        .map((i) => React.createRef()),
+    [data]
+  );
+  const [{}, dispatch] = useStateValue();
+  let history = useHistory();
   const url = 'https://newsapi.org/v2';
+
+  // console.log(childRefs);
 
   //api call for specific source
   useEffect(() => {
-    console.log(currentSource);
-    Axios.get(
-      `${url}/everything?sources=${currentSource}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
-    )
+    // console.log(currentSource);
+    const websiteUrl =
+      currentSource === 'allSources'
+        ? `${url}/top-headlines?country=us&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
+        : `${url}/everything?sources=${currentSource}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`;
+    Axios.get(websiteUrl)
       .then((res) => {
         setData(res.data);
-        console.log(res.data);
+        // console.log(res.data);
       })
       .catch((error) => console.log(error));
   }, [currentSource]);
 
   //api call for specific category
   useEffect(() => {
-    console.log(currentCategory);
-    Axios.get(
-      `https://newsapi.org/v2/top-headlines?country=us&category=${currentCategory}&apiKey=10717d4d8b8441928a23aea895776649`
-    )
+    // console.log(currentCategory);
+    const websiteUrl =
+      currentCategory === 'allCategories'
+        ? `${url}/top-headlines?country=us&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
+        : `${url}/top-headlines?country=us&category=${currentCategory}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`;
+    Axios.get(websiteUrl)
       .then((res) => {
         setData(res.data);
-        console.log(res.data);
+        // console.log(res.data);
       })
       .catch((error) => console.log(error));
   }, [currentCategory]);
 
+  //directs user to the article details page when they click a card
   const handleRedirect = (url) => {
     setArticleUrl(url);
     history.push(`/article-details`);
     // console.log('redirect');
   };
 
+  //allows user to use the x and bookmark buttons
+  const swipe = (dir) => {
+    const cardsLeft = data.articles.filter(
+      (article) => !alreadyRemoved.includes(article.url)
+    );
+    if (cardsLeft.length) {
+      const toBeRemoved = cardsLeft[cardsLeft.length - 1].url; // Find the card object to be removed
+      const index = data.articles
+        .map((article) => article.url)
+        .indexOf(toBeRemoved); // Find the index of which to make the reference to
+      alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
+      childRefs[index].current.swipe(dir); // Swipe the card!
+    }
+  };
+
+  const addToBookmarks = () => {
+    dispatch({
+      type: 'ADD_TO_BOOKMARKS',
+      item: {},
+    });
+  };
+
   return (
     <div>
       <CardContainer>
         {data ? (
-          data.articles.map((article) => (
-            <NewsCard key={article.title} preventSwipe={['up', 'down']}>
+          data.articles.map((article, index) => (
+            <NewsCard
+              ref={childRefs[index]}
+              key={article.title}
+              preventSwipe={['up', 'down']}>
               <Card style={{ backgroundImage: `url(${article.urlToImage})` }}>
                 <BottomContainer
                   onClick={() => {
@@ -66,6 +113,28 @@ const NewsCards = () => {
         ) : (
           <Loader />
         )}
+        <div className='swipeButtons'>
+          <IconButton>
+            <CloseIcon
+              onClick={() => swipe('left')}
+              className='swipeButtons__close'
+              style={{ fontSize: 34, color: '#ff4757' }}
+            />
+          </IconButton>
+          <IconButton>
+            <ShareIcon
+              className='swipeButtons__share'
+              style={{ fontSize: 34, color: '#24cca7' }}
+            />
+          </IconButton>
+          <IconButton>
+            <BookmarkIcon
+              onClick={() => swipe('right')}
+              className='swipeButtons__bookmark'
+              style={{ fontSize: 34, color: '#4a56e2' }}
+            />
+          </IconButton>
+        </div>
       </CardContainer>
     </div>
   );

@@ -32,7 +32,10 @@ const categoryFilter = {
   Technology: 'technology',
 };
 
-const UserSettingsContext = createContext({ currentSource: 'allSources' });
+const UserSettingsContext = createContext({
+  currentSource: 'allSources',
+  currentCategory: 'allCategories',
+});
 
 const UserSettingsProvider = ({ children }) => {
   const classes = useStyles();
@@ -55,18 +58,18 @@ const UserSettingsProvider = ({ children }) => {
     setState({ ...state, [anchor]: open });
   };
 
-  //api call for when a user selects a specific source
+  //event trigger for when a user selects a source from the dropdown
   const onSourceChange = async (ev) => {
     const sourceVal = ev.target.value;
     setCurrentSource(sourceVal);
     // console.log('This thing working?', sourceVal);
   };
 
-  //api call for when a user selects a specific category
+  //event trigger for when a user selects a category from the dropdown
   const onCategoryChange = async (ev) => {
     const categoryVal = ev.target.value;
     setCurrentCategory(categoryVal);
-    console.log('This thing working?', categoryVal);
+    // console.log('This thing working?', categoryVal);
   };
 
   const list = (anchor) => (
@@ -82,7 +85,6 @@ const UserSettingsProvider = ({ children }) => {
       <Divider />
       <Wrap>
         <SelectSource>Browse by Source</SelectSource>
-        {/* need to place an onChange in here to be fired when a menu item is selected */}
         <FormControl>
           <SelectDropdown
             variant='outlined'
@@ -99,13 +101,12 @@ const UserSettingsProvider = ({ children }) => {
         </FormControl>
 
         <SelectSource>Browse by Category</SelectSource>
-        {/* need to place an onChange in here to be fired when a menu item is selected */}
         <FormControl>
           <SelectDropdown
             variant='outlined'
             value={currentCategory}
             onChange={onCategoryChange}>
-            {/* looping through all sources currentCategory to show in the dropdown. This needs to be fixed to show each cat, not each cat for every article. */}
+            {/* looping through all categories to show in the dropdown. */}
             <MenuItem value='allCategories'>All Categories</MenuItem>
             {Object.keys(categoryFilter).map((key) => {
               return <MenuItem value={key}>{key}</MenuItem>;
@@ -113,12 +114,13 @@ const UserSettingsProvider = ({ children }) => {
           </SelectDropdown>
         </FormControl>
         <ButtonWrap onClick={toggleDrawer(anchor, false)}>
-          <Button>Close</Button>
+          <Button>View Results</Button>
         </ButtonWrap>
       </Wrap>
     </div>
   );
 
+  //using context to pass props to the NewsCards component
   return (
     <UserSettingsContext.Provider
       value={{ currentSource, currentCategory, toggleDrawer }}>
