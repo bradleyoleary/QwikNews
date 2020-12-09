@@ -9,11 +9,12 @@ import { useUserSettings } from './UserSettings';
 
 const NewsCards = () => {
   const { setArticleUrl } = useContext(ArticleDetailsContext);
-  const { currentSource } = useUserSettings();
+  const { currentSource, currentCategory } = useUserSettings();
   let history = useHistory();
   const [data, setData] = useState();
   const url = 'https://newsapi.org/v2';
 
+  //api call for specific source
   useEffect(() => {
     console.log(currentSource);
     Axios.get(
@@ -25,6 +26,19 @@ const NewsCards = () => {
       })
       .catch((error) => console.log(error));
   }, [currentSource]);
+
+  //api call for specific category
+  useEffect(() => {
+    console.log(currentCategory);
+    Axios.get(
+      `https://newsapi.org/v2/top-headlines?country=us&category=${currentCategory}&apiKey=10717d4d8b8441928a23aea895776649`
+    )
+      .then((res) => {
+        setData(res.data);
+        console.log(res.data);
+      })
+      .catch((error) => console.log(error));
+  }, [currentCategory]);
 
   const handleRedirect = (url) => {
     setArticleUrl(url);

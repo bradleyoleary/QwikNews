@@ -40,9 +40,7 @@ const UserSettingsProvider = ({ children }) => {
     right: false,
   });
   const [currentSource, setCurrentSource] = useState('allSources');
-  const [sourceInfo, setSourceInfo] = useState({});
-  const [categories, setCategories] = useState('allCategories');
-  const [categoryInfo, setCategoryInfo] = useState({});
+  const [currentCategory, setCurrentCategory] = useState('allCategories');
   const { sourceData } = useContext(SourceContext);
 
   //material-ui drawer
@@ -61,31 +59,15 @@ const UserSettingsProvider = ({ children }) => {
   const onSourceChange = async (ev) => {
     const sourceVal = ev.target.value;
     setCurrentSource(sourceVal);
-    console.log('This thing working?', sourceVal);
+    // console.log('This thing working?', sourceVal);
   };
-
-  console.log('HERE IS THE SOURCE INFO', sourceInfo);
 
   //api call for when a user selects a specific category
   const onCategoryChange = async (ev) => {
-    const siteUrl = 'https://newsapi.org/v2';
     const categoryVal = ev.target.value;
-    setCategories(categoryVal);
-    // console.log('This thing working?', categoryVal);
-    const url =
-      categoryVal === 'allCategories'
-        ? `${siteUrl}/top-headlines?country=us&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
-        : `${siteUrl}/top-headlines?country=us&category=${categoryVal}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`;
-    await fetch(url)
-      .then((res) => res.json())
-      .then((data) => {
-        console.log(data);
-        setCategories(categoryVal);
-        setCategoryInfo(data);
-      });
+    setCurrentCategory(categoryVal);
+    console.log('This thing working?', categoryVal);
   };
-
-  console.log('HERE IS THE CATEGORY INFO', categoryInfo);
 
   const list = (anchor) => (
     <div
@@ -99,7 +81,7 @@ const UserSettingsProvider = ({ children }) => {
       </List>
       <Divider />
       <Wrap>
-        <SelectSource>Select Source</SelectSource>
+        <SelectSource>Browse by Source</SelectSource>
         {/* need to place an onChange in here to be fired when a menu item is selected */}
         <FormControl>
           <SelectDropdown
@@ -116,14 +98,14 @@ const UserSettingsProvider = ({ children }) => {
           </SelectDropdown>
         </FormControl>
 
-        <SelectSource>Select Category</SelectSource>
+        <SelectSource>Browse by Category</SelectSource>
         {/* need to place an onChange in here to be fired when a menu item is selected */}
         <FormControl>
           <SelectDropdown
             variant='outlined'
-            value={categories}
+            value={currentCategory}
             onChange={onCategoryChange}>
-            {/* looping through all sources categories to show in the dropdown. This needs to be fixed to show each cat, not each cat for every article. */}
+            {/* looping through all sources currentCategory to show in the dropdown. This needs to be fixed to show each cat, not each cat for every article. */}
             <MenuItem value='allCategories'>All Categories</MenuItem>
             {Object.keys(categoryFilter).map((key) => {
               return <MenuItem value={key}>{key}</MenuItem>;
@@ -138,7 +120,8 @@ const UserSettingsProvider = ({ children }) => {
   );
 
   return (
-    <UserSettingsContext.Provider value={{ currentSource, toggleDrawer }}>
+    <UserSettingsContext.Provider
+      value={{ currentSource, currentCategory, toggleDrawer }}>
       <>
         {children}
         <div>
