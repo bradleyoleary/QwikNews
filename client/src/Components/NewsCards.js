@@ -11,25 +11,43 @@ import BookmarkIcon from '@material-ui/icons/Bookmark';
 import IconButton from '@material-ui/core/IconButton';
 import ShareIcon from '@material-ui/icons/Share';
 import './SwipeButtons.css';
-import { useStateValue } from '../Context/BookmarkContext';
+import { useDispatch } from 'react-redux';
+import { addArticle } from './Actions';
+import { notification } from 'antd';
+import 'antd/dist/antd.css';
+import { COLORS } from '../Styles/Constants';
+import { useAuth } from '../Context/AuthContext';
+import { db } from './Firebase';
 
 const NewsCards = () => {
   const { setArticleUrl } = useContext(ArticleDetailsContext);
-  const { currentSource, currentCategory } = useUserSettings();
+  const { currentSource, currentCategory, searchTerm } = useUserSettings();
   const [data, setData] = useState();
   const alreadyRemoved = [];
   const childRefs = useMemo(
     () =>
-      Array(data ? data.articles.length : 'loading')
+      Array(data?.articles.length)
         .fill(0)
         .map((i) => React.createRef()),
     [data]
   );
-  const [{}, dispatch] = useStateValue();
-  let history = useHistory();
+  const dispatch = useDispatch();
   const url = 'https://newsapi.org/v2';
+  const { currentUser } = useAuth();
 
   // console.log(childRefs);
+
+  //api call for user search
+  useEffect(() => {
+    Axios.get(
+      `${url}/everything?q=${searchTerm}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
+    )
+      .then((res) => {
+        setData(res.data);
+        console.log(res.data);
+      })
+      .catch((error) => console.log(error));
+  }, [searchTerm]);
 
   //api call for specific source
   useEffect(() => {
@@ -62,6 +80,7 @@ const NewsCards = () => {
   }, [currentCategory]);
 
   //directs user to the article details page when they click a card
+  let history = useHistory();
   const handleRedirect = (url) => {
     setArticleUrl(url);
     history.push(`/article-details`);
@@ -74,22 +93,61 @@ const NewsCards = () => {
       (article) => !alreadyRemoved.includes(article.url)
     );
     if (cardsLeft.length) {
-      const toBeRemoved = cardsLeft[cardsLeft.length - 1].url; // Find the card object to be removed
+      const toBeRemoved = cardsLeft[cardsLeft.length - 1].url;
+      // console.log(toBeRemoved);
       const index = data.articles
         .map((article) => article.url)
-        .indexOf(toBeRemoved); // Find the index of which to make the reference to
-      alreadyRemoved.push(toBeRemoved); // Make sure the next card gets removed next time if this card do not have time to exit the screen
-      childRefs[index].current.swipe(dir); // Swipe the card!
+        .indexOf(toBeRemoved);
+      console.log(index);
+      alreadyRemoved.push(toBeRemoved);
+      childRefs[index].current.swipe(dir);
     }
   };
 
-  const addToBookmarks = () => {
-    dispatch({
-      type: 'ADD_TO_BOOKMARKS',
-      item: {},
+  //working on getting redux working to add bookmarks****
+  const addToBookmarks = async () => {
+    const cardsLeft = data.articles.filter(
+      (article) => !alreadyRemoved.includes(article.url)
+    );
+    const currentArticle = cardsLeft[cardsLeft.length - 1];
+    const bookmarksCollection = db.collection('bookmarks');
+    const userRef = db.collection('users').doc(currentUser.uid);
+    const bookmarkedArticles = await bookmarksCollection.add({
+      userRef: userRef,
+      url: currentArticle.url,
+    });
+    console.log(bookmarkedArticles);
+
+    // const cardsLeft = data.articles.filter(
+    //   (article) => !alreadyRemoved.includes(article.url)
+    // );
+    // const toBeRemoved = cardsLeft[cardsLeft.length - 1].url;
+    swipe('right');
+    dispatch(addArticle(currentArticle));
+  };
+
+  //success notification when user selects the share button
+  const shareButtonConfirmation = (type) => {
+    notification[type]({
+      message: 'The article URL has been copied to your clipboard.',
     });
   };
 
+  //functionality for the share button on the homepage
+  const ShareArticleUrl = async () => {
+    shareButtonConfirmation('success');
+    const cardsLeft = data.articles.filter(
+      (article) => !alreadyRemoved.includes(article.url)
+    );
+    const toBeRemoved = cardsLeft[cardsLeft.length - 1].url;
+    try {
+      await navigator.clipboard.writeText(toBeRemoved);
+      console.log('Article URL copied to clipboard');
+    } catch (error) {
+      console.error('Failed to copy: ', error);
+    }
+  };
+  //mapping through the articles to return info on the cards.
   return (
     <div>
       <CardContainer>
@@ -123,13 +181,14 @@ const NewsCards = () => {
           </IconButton>
           <IconButton>
             <ShareIcon
+              onClick={ShareArticleUrl}
               className='swipeButtons__share'
-              style={{ fontSize: 34, color: '#24cca7' }}
+              style={{ fontSize: 34, color: `${COLORS.secondary}` }}
             />
           </IconButton>
           <IconButton>
             <BookmarkIcon
-              onClick={() => swipe('right')}
+              onClick={addToBookmarks}
               className='swipeButtons__bookmark'
               style={{ fontSize: 34, color: '#4a56e2' }}
             />
@@ -188,7 +247,7 @@ const BottomContainer = styled.div`
   height: 115px;
   border-radius: 12px;
   justify-content: center;
-  border: 3px solid #24cca7; //Temp fix to the shadow issue
+  border: 3px solid ${COLORS.secondary}; //Temp fix to the shadow issue
   transition: 0.2s;
 
   &:hover {

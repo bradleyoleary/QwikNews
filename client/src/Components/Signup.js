@@ -6,12 +6,13 @@ import { Link, useHistory } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ReactComponent as Logo } from '../Assets/illustration.svg';
 import LanguageIcon from '@material-ui/icons/Language';
+import { db } from './Firebase';
 
 export default function Signup() {
   const emailRef = useRef();
   const passwordRef = useRef();
   const passwordConfirmRef = useRef();
-  const { signup } = useAuth();
+  const { signup, currentUser } = useAuth();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const history = useHistory();
@@ -20,16 +21,21 @@ export default function Signup() {
     e.preventDefault();
 
     if (passwordRef.current.value !== passwordConfirmRef.current.value) {
-      return setError('Passwords do not match');
+      return setError('Passwords do not match. Please try again!');
     }
 
     try {
       setError('');
       setLoading(true);
       await signup(emailRef.current.value, passwordRef.current.value);
+      await db.collection('users').doc(currentUser.uid).set({
+        email: currentUser.email,
+        emailVerified: currentUser.emailVerified,
+        providerId: currentUser.providerId,
+      });
       history.push('/');
     } catch {
-      setError('Failed to create an account');
+      setError('Failed to create an account. Please try again!');
     }
 
     setLoading(false);

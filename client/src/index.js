@@ -1,17 +1,23 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import { BookmarkProvider } from './Context/BookmarkContext';
-import reducer, { initialState } from './Components/Reducer';
 import { AuthProvider } from './Context/AuthContext';
 import { SourceProvider } from './Context/SourceContext';
+import { createStore } from 'redux';
+import { Provider } from 'react-redux';
+import { bookmarkReducer } from './Components/Reducer';
+
+const store = createStore(
+  bookmarkReducer,
+  window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+);
 
 ReactDOM.render(
   <AuthProvider>
     <SourceProvider>
-      <BookmarkProvider initialState={initialState} reducer={reducer}>
+      <Provider store={store}>
         <App />
-      </BookmarkProvider>
+      </Provider>
     </SourceProvider>
   </AuthProvider>,
   document.getElementById('root')

@@ -12,6 +12,7 @@ import {
 } from '@material-ui/core';
 import { COLORS } from '../Styles/Constants';
 import { SourceContext } from '../Context/SourceContext';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles({
   list: {
@@ -39,11 +40,12 @@ const UserSettingsContext = createContext({
 
 const UserSettingsProvider = ({ children }) => {
   const classes = useStyles();
-  const [state, setState] = React.useState({
+  const [state, setState] = useState({
     right: false,
   });
   const [currentSource, setCurrentSource] = useState('allSources');
   const [currentCategory, setCurrentCategory] = useState('allCategories');
+  const [searchTerm, setSearchTerm] = useState('');
   const { sourceData } = useContext(SourceContext);
 
   //material-ui drawer
@@ -54,8 +56,12 @@ const UserSettingsProvider = ({ children }) => {
     ) {
       return;
     }
-
     setState({ ...state, [anchor]: open });
+  };
+
+  const onSearchChange = async (ev) => {
+    const searchVal = ev.target.value;
+    setSearchTerm(searchVal);
   };
 
   //event trigger for when a user selects a source from the dropdown
@@ -77,13 +83,20 @@ const UserSettingsProvider = ({ children }) => {
       className={clsx(classes.list, {
         [classes.fullList]: anchor === 'top' || anchor === 'bottom',
       })}
-      role='presentation'
-      onKeyDown={toggleDrawer(anchor, false)}>
+      role='presentation'>
       <List>
-        <Settings>My Settings</Settings>
+        <Settings>My Filters</Settings>
       </List>
       <Divider />
       <Wrap>
+        <SelectSource>Search News</SelectSource>
+        <TextInput
+          id='outlined-basic'
+          label='Search...'
+          variant='outlined'
+          value={searchTerm}
+          onChange={onSearchChange}
+        />
         <SelectSource>Browse by Source</SelectSource>
         <FormControl>
           <SelectDropdown
@@ -123,7 +136,7 @@ const UserSettingsProvider = ({ children }) => {
   //using context to pass props to the NewsCards component
   return (
     <UserSettingsContext.Provider
-      value={{ currentSource, currentCategory, toggleDrawer }}>
+      value={{ currentSource, currentCategory, searchTerm, toggleDrawer }}>
       <>
         {children}
         <div>
@@ -144,6 +157,10 @@ const UserSettingsProvider = ({ children }) => {
 export const useUserSettings = () => {
   return useContext(UserSettingsContext);
 };
+
+const TextInput = styled(TextField)`
+  margin: 10px 10px;
+`;
 
 const SelectDropdown = styled(Select)`
   margin: 10px 10px;

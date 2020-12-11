@@ -1,18 +1,22 @@
-export const initialState = {
-  bookmarks: [],
-};
+const initialState = {};
 
-const reducer = (state, action) => {
+export const bookmarkReducer = (state = initialState, action) => {
   console.log(action);
+  // console.log(state);
   switch (action.type) {
-    case 'ADD_TO_BOOKMARKS':
-      //Logic for adding article to bookmarks
-      return { ...state, bookmarks: [...state.bookmarks, action.item] };
-    case 'REMOVE_FROM_BOOKMARKS':
-    //Logic for removing bookmark
+    case 'ADD_ARTICLE': {
+      return {
+        ...state,
+        [action.article.url]: {
+          ...action.article,
+          quantity:
+            state[action.article.url] && state[action.article.url].quantity
+              ? state[action.article.url].quantity + 1
+              : 1,
+        },
+      };
+    }
     default:
       return state;
   }
 };
-
-export default reducer;
