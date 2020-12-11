@@ -114,7 +114,10 @@ const NewsCards = () => {
     const userRef = db.collection('users').doc(currentUser.uid);
     const bookmarkedArticles = await bookmarksCollection.add({
       userRef: userRef,
+      title: currentArticle.title,
+      image: currentArticle.urlToImage,
       url: currentArticle.url,
+      source: currentArticle.source.name,
     });
     console.log(bookmarkedArticles);
 

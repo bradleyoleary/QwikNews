@@ -63,7 +63,7 @@ export default function UserProfile() {
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}>
       <List>
-        <Profile>My Profile: {currentUser.email}</Profile>
+        <Profile>My Profile: {currentUser?.email}</Profile>
         {error && <Alert variant='danger'>{error}</Alert>}
       </List>
       <Divider />
