@@ -110,6 +110,7 @@ const TitleDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-bottom: 10px;
 `;
 
 const StyledLink = styled(Link)`

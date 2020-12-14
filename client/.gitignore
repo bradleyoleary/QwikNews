@@ -21,7 +21,6 @@
 .env.production.local
 .env
 .eslintcache
-.Onboarding.svg
 
 npm-debug.log*
 yarn-debug.log*

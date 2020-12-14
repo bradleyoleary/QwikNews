@@ -113,7 +113,7 @@ const PicDiv = styled.div`
 
 const Title = styled.h1`
   font-size: 2rem;
-  padding-left: 2px;
+  padding: 2px;
 `;
 
 const NewsWrap = styled.span`
@@ -124,6 +124,7 @@ const TitleDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding-bottom: 10px;
 `;
 
 const StyledLink = styled(Link)`
