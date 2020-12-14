@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import { ReactComponent as Logo } from '../Assets/illustration.svg';
 import LanguageIcon from '@material-ui/icons/Language';
+import { COLORS } from '../Styles/Constants';
 
 export default function ForgotPassword() {
   const emailRef = useRef();
@@ -16,7 +17,6 @@ export default function ForgotPassword() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-
     try {
       setMessage('');
       setError('');
@@ -33,14 +33,16 @@ export default function ForgotPassword() {
     <>
       <TitleDiv>
         <LanguageIcon style={{ fontSize: 50, color: '#4a56e2' }} />
-        <Title>QwikNews</Title>
+        <Title>
+          Qwik<NewsWrap>News</NewsWrap>
+        </Title>
       </TitleDiv>
       <PicDiv>
         <StyledIllustration />
       </PicDiv>
       <Card style={{ padding: '20px' }}>
         <Card.Body>
-          <h2 className='text-center mb-4'>Password Reset</h2>
+          <BoxTitle className='text-center mb-4'>Password Reset</BoxTitle>
           {error && <Alert variant='danger'>{error}</Alert>}
           {message && <Alert variant='success'>{message}</Alert>}
           <Form onSubmit={handleSubmit}>
@@ -63,12 +65,12 @@ export default function ForgotPassword() {
           <div
             className='w-100 text-center mt-3'
             style={{ paddingTop: '20px' }}>
-            <Link to='/login'>Log In</Link>{' '}
+            <StyledLink to='/login'>Log In</StyledLink>{' '}
           </div>
         </Card.Body>
       </Card>
       <div className='w-100 text-center mt-2' style={{ paddingTop: '20px' }}>
-        Need an account? <Link to='/sign-up'>Sign Up</Link>
+        Need an account? <StyledLink to='/sign-up'>Sign Up</StyledLink>
       </div>
     </>
   );
@@ -78,18 +80,30 @@ const StyledIllustration = styled(Logo)`
   height: 240px;
 `;
 
+const BoxTitle = styled.h1`
+  font-size: 1.5rem;
+`;
+
 const PicDiv = styled.div`
   display: flex;
   margin-bottom: 20px;
 `;
 
 const Title = styled.h1`
-  font-size: 50px;
-  padding-left: 10px;
+  font-size: 2rem;
+  padding-left: 2px;
+`;
+
+const NewsWrap = styled.span`
+  color: ${COLORS.primary};
 `;
 
 const TitleDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const StyledLink = styled(Link)`
+  color: ${COLORS.primary};
 `;

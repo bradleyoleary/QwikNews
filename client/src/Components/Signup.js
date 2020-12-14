@@ -7,6 +7,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { ReactComponent as Logo } from '../Assets/illustration.svg';
 import LanguageIcon from '@material-ui/icons/Language';
 import { db } from './Firebase';
+import { COLORS } from '../Styles/Constants';
 
 export default function Signup() {
   const emailRef = useRef();
@@ -33,7 +34,7 @@ export default function Signup() {
         emailVerified: currentUser.emailVerified,
         providerId: currentUser.providerId,
       });
-      history.push('/');
+      history.push('/onboarding');
     } catch {
       setError('Failed to create an account. Please try again!');
     }
@@ -44,7 +45,9 @@ export default function Signup() {
     <>
       <TitleDiv>
         <LanguageIcon style={{ fontSize: 45, color: '#4a56e2' }} />
-        <Title>QwikNews</Title>
+        <Title>
+          Qwik<NewsWrap>News</NewsWrap>
+        </Title>
       </TitleDiv>
       <PicDiv>
         <StyledIllustration />
@@ -89,14 +92,14 @@ export default function Signup() {
         </Card.Body>
       </Card>
       <div className='w-100 text-center mt-2' style={{ paddingTop: '20px' }}>
-        Already have an account? <Link to='/login'>Log In</Link>
+        Already have an account? <StyledLink to='/login'>Log In</StyledLink>
       </div>
     </>
   );
 }
 
 const BoxTitle = styled.h1`
-  font-size: 24px;
+  font-size: 1.5rem;
 `;
 
 const StyledIllustration = styled(Logo)`
@@ -109,12 +112,20 @@ const PicDiv = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 45px;
-  padding-left: 10px;
+  font-size: 2rem;
+  padding-left: 2px;
+`;
+
+const NewsWrap = styled.span`
+  color: ${COLORS.primary};
 `;
 
 const TitleDiv = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+`;
+
+const StyledLink = styled(Link)`
+  color: ${COLORS.primary};
 `;

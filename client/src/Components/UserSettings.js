@@ -12,7 +12,8 @@ import {
 } from '@material-ui/core';
 import { COLORS } from '../Styles/Constants';
 import { SourceContext } from '../Context/SourceContext';
-import TextField from '@material-ui/core/TextField';
+import FilterListIcon from '@material-ui/icons/FilterList';
+import { DebounceInput } from 'react-debounce-input';
 
 const useStyles = makeStyles({
   list: {
@@ -60,22 +61,18 @@ const UserSettingsProvider = ({ children }) => {
   };
 
   const onSearchChange = async (ev) => {
-    const searchVal = ev.target.value;
-    setSearchTerm(searchVal);
+    setSearchTerm(ev.target.value);
   };
 
   //event trigger for when a user selects a source from the dropdown
   const onSourceChange = async (ev) => {
-    const sourceVal = ev.target.value;
-    setCurrentSource(sourceVal);
-    // console.log('This thing working?', sourceVal);
+    setCurrentSource(ev.target.value);
   };
 
   //event trigger for when a user selects a category from the dropdown
   const onCategoryChange = async (ev) => {
     const categoryVal = ev.target.value;
     setCurrentCategory(categoryVal);
-    // console.log('This thing working?', categoryVal);
   };
 
   const list = (anchor) => (
@@ -85,16 +82,20 @@ const UserSettingsProvider = ({ children }) => {
       })}
       role='presentation'>
       <List>
-        <Settings>My Filters</Settings>
+        <Settings>
+          <FilterListIcon
+            style={{ color: '#4a56e2', marginRight: '5px', fontSize: 32 }}
+          />{' '}
+          My Filters
+        </Settings>
       </List>
       <Divider />
       <Wrap>
         <SelectSource>Search News</SelectSource>
         <TextInput
-          id='outlined-basic'
-          label='Search...'
-          variant='outlined'
-          value={searchTerm}
+          placeholder='Search...'
+          minLength={2}
+          debounceTimeout={2000}
           onChange={onSearchChange}
         />
         <SelectSource>Browse by Source</SelectSource>
@@ -158,8 +159,11 @@ export const useUserSettings = () => {
   return useContext(UserSettingsContext);
 };
 
-const TextInput = styled(TextField)`
+const TextInput = styled(DebounceInput)`
+  padding: 16px;
+  border-radius: 4px;
   margin: 10px 10px;
+  border: 1px solid #c4c4c4;
 `;
 
 const SelectDropdown = styled(Select)`
@@ -173,7 +177,11 @@ const Wrap = styled.div`
 `;
 
 const Settings = styled.h1`
-  padding: 10px;
+  padding: 5px;
+  font-size: 1.1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 const SelectSource = styled.h2`

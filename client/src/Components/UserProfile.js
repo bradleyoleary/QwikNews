@@ -10,13 +10,17 @@ import {
   Divider,
   IconButton,
 } from '@material-ui/core';
-import PersonIcon from '@material-ui/icons/Person';
+import MenuBookIcon from '@material-ui/icons/MenuBook';
 import { Alert } from 'react-bootstrap';
 import { useAuth } from '../Context/AuthContext';
+import BookmarkIcon from '@material-ui/icons/Bookmark';
+import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
+import SettingsIcon from '@material-ui/icons/Settings';
+import PersonIcon from '@material-ui/icons/Person';
 
 const useStyles = makeStyles({
   list: {
-    height: 250,
+    height: 300,
   },
   fullList: {
     width: 'auto',
@@ -63,17 +67,30 @@ export default function UserProfile() {
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}>
       <List>
-        <Profile>My Profile: {currentUser?.email}</Profile>
+        <Profile>Logged in as - {currentUser?.email}</Profile>
         {error && <Alert variant='danger'>{error}</Alert>}
       </List>
       <Divider />
       <Wrap>
         <LinkToPages to='/'>
-          <NewsFeed>News Feed</NewsFeed>
+          <MenuItem>
+            <LibraryBooksIcon
+              style={{ color: '#24cc89', marginRight: '5px' }}
+            />
+            News Feed
+          </MenuItem>
         </LinkToPages>
         <LinkToPages to='/bookmarks'>
-          <Bookmarks>My Bookmarks</Bookmarks>
+          <MenuItem>
+            <BookmarkIcon style={{ color: '#4a56e2', marginRight: '5px' }} />
+            My Bookmarks
+          </MenuItem>
         </LinkToPages>
+        <MenuItem>
+          <div></div>
+          <SettingsIcon style={{ color: '#f5c11f', marginRight: '5px' }} />
+          Settings and privacy
+        </MenuItem>
         <Button onClick={handleLogout}>Sign Out</Button>
       </Wrap>
     </div>
@@ -122,11 +139,7 @@ const Profile = styled.h1`
   padding: 10px;
 `;
 
-const NewsFeed = styled.p`
-  padding: 10px;
-`;
-
-const Bookmarks = styled.p`
+const MenuItem = styled.p`
   padding: 10px;
 `;
 

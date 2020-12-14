@@ -10,40 +10,42 @@ const ArticleDetails = () => {
   const { articleUrl } = useContext(ArticleDetailsContext);
   const history = useHistory();
   const handleExitArticleDetails = () => {
-    history.push('/');
+    history.goBack();
   };
   // console.log(articleUrl);
   return (
     <div>
-      <ButtonDiv>
-        <BackToArticles onClick={() => handleExitArticleDetails()}>
+      <Wrapper>
+        <BackButton onClick={() => handleExitArticleDetails()}>
           <Arrow />
-          Back to Articles
-        </BackToArticles>
-      </ButtonDiv>
+        </BackButton>
+        <Word>Article Details</Word>
+      </Wrapper>
       <Window url={articleUrl} display='initial' position='relative' />;
     </div>
   );
 };
 
-const ButtonDiv = styled.div`
+const Wrapper = styled.div`
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  flex-direction: row;
   align-items: center;
-  border-bottom: 2px solid #f9f9f9;
+  padding: 10px 28px;
+  justify-content: space-between;
+  border-bottom: 2px solid #f2f2f2;
 `;
 
-const BackToArticles = styled.button`
-  justify-content: center;
-  align-items: center;
+const Word = styled.h1`
+  font-size: 1.2rem;
+`;
+
+const BackButton = styled.button`
   display: flex;
-  margin-top: 20px;
+  margin-top: 0px;
   background: ${COLORS.primary};
   color: white;
-  border-radius: 5px;
+  border-radius: 50px;
   padding: 10px;
-  margin: 15px 80px;
   border: 0px;
   outline: none;
   font-size: 20px;

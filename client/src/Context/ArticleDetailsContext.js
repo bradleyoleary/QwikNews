@@ -4,6 +4,7 @@ import React, { createContext, useEffect, useState } from 'react';
 export const ArticleDetailsContext = createContext();
 
 export const ArticleDetailsProvider = (props) => {
+  const [currentArticle, setCurrentArticle] = useState(0);
   const [articleUrl, setArticleUrl] = useState('');
   const url = 'https://newsapi.org/v2';
 
@@ -18,7 +19,8 @@ export const ArticleDetailsProvider = (props) => {
   console.log(articleUrl);
 
   return (
-    <ArticleDetailsContext.Provider value={{ articleUrl, setArticleUrl }}>
+    <ArticleDetailsContext.Provider
+      value={{ articleUrl, setArticleUrl, currentArticle, setCurrentArticle }}>
       {props.children}
     </ArticleDetailsContext.Provider>
   );

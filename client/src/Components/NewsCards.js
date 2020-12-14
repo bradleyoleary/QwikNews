@@ -11,8 +11,6 @@ import BookmarkIcon from '@material-ui/icons/Bookmark';
 import IconButton from '@material-ui/core/IconButton';
 import ShareIcon from '@material-ui/icons/Share';
 import './SwipeButtons.css';
-import { useDispatch } from 'react-redux';
-import { addArticle } from './Actions';
 import { notification } from 'antd';
 import 'antd/dist/antd.css';
 import { COLORS } from '../Styles/Constants';
@@ -20,7 +18,9 @@ import { useAuth } from '../Context/AuthContext';
 import { db } from './Firebase';
 
 const NewsCards = () => {
-  const { setArticleUrl } = useContext(ArticleDetailsContext);
+  const { setArticleUrl, currentArticle, setCurrentArticle } = useContext(
+    ArticleDetailsContext
+  );
   const { currentSource, currentCategory, searchTerm } = useUserSettings();
   const [data, setData] = useState();
   const alreadyRemoved = [];
@@ -31,7 +31,6 @@ const NewsCards = () => {
         .map((i) => React.createRef()),
     [data]
   );
-  const dispatch = useDispatch();
   const url = 'https://newsapi.org/v2';
   const { currentUser } = useAuth();
 
@@ -39,9 +38,11 @@ const NewsCards = () => {
 
   //api call for user search
   useEffect(() => {
-    Axios.get(
-      `${url}/everything?q=${searchTerm}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
-    )
+    const websiteUrl =
+      currentSource === ''
+        ? `${url}/top-headlines?country=us&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`
+        : `${url}/everything?q=${searchTerm}&apiKey=${process.env.REACT_APP_NEWS_API_KEY}`;
+    Axios.get(websiteUrl)
       .then((res) => {
         setData(res.data);
         console.log(res.data);
@@ -93,18 +94,19 @@ const NewsCards = () => {
       (article) => !alreadyRemoved.includes(article.url)
     );
     if (cardsLeft.length) {
-      const toBeRemoved = cardsLeft[cardsLeft.length - 1].url;
-      // console.log(toBeRemoved);
+      const currentArticle = cardsLeft[cardsLeft.length - 1].url;
+      console.log(currentArticle);
       const index = data.articles
         .map((article) => article.url)
-        .indexOf(toBeRemoved);
+        .indexOf(currentArticle);
       console.log(index);
-      alreadyRemoved.push(toBeRemoved);
+      // setCurrentArticle(index);
+      alreadyRemoved.push(currentArticle);
       childRefs[index].current.swipe(dir);
     }
   };
 
-  //working on getting redux working to add bookmarks****
+  //functionality for adding bookmarks to the firestore db
   const addToBookmarks = async () => {
     const cardsLeft = data.articles.filter(
       (article) => !alreadyRemoved.includes(article.url)
@@ -120,13 +122,7 @@ const NewsCards = () => {
       source: currentArticle.source.name,
     });
     console.log(bookmarkedArticles);
-
-    // const cardsLeft = data.articles.filter(
-    //   (article) => !alreadyRemoved.includes(article.url)
-    // );
-    // const toBeRemoved = cardsLeft[cardsLeft.length - 1].url;
     swipe('right');
-    dispatch(addArticle(currentArticle));
   };
 
   //success notification when user selects the share button
@@ -142,9 +138,9 @@ const NewsCards = () => {
     const cardsLeft = data.articles.filter(
       (article) => !alreadyRemoved.includes(article.url)
     );
-    const toBeRemoved = cardsLeft[cardsLeft.length - 1].url;
+    const currentArticle = cardsLeft[cardsLeft.length - 1].url;
     try {
-      await navigator.clipboard.writeText(toBeRemoved);
+      await navigator.clipboard.writeText(currentArticle);
       console.log('Article URL copied to clipboard');
     } catch (error) {
       console.error('Failed to copy: ', error);
@@ -155,22 +151,27 @@ const NewsCards = () => {
     <div>
       <CardContainer>
         {data ? (
-          data.articles.map((article, index) => (
-            <NewsCard
-              ref={childRefs[index]}
-              key={article.title}
-              preventSwipe={['up', 'down']}>
-              <Card style={{ backgroundImage: `url(${article.urlToImage})` }}>
-                <BottomContainer
-                  onClick={() => {
-                    handleRedirect(article.url);
-                  }}>
-                  <ArticleSource>{article.source.name}</ArticleSource>
-                  <ArticleName>{article.title}</ArticleName>
-                </BottomContainer>
-              </Card>
-            </NewsCard>
-          ))
+          data.articles.map((article, index) => {
+            // console.log(article);
+            // if (index >= currentArticle) {
+            return (
+              <NewsCard
+                ref={childRefs[index]}
+                key={article.title}
+                preventSwipe={['up', 'down']}>
+                <Card style={{ backgroundImage: `url(${article.urlToImage})` }}>
+                  <BottomContainer
+                    onClick={() => {
+                      handleRedirect(article.url);
+                    }}>
+                    <ArticleSource>{article.source.name}</ArticleSource>
+                    <ArticleName>{article.title}</ArticleName>
+                  </BottomContainer>
+                </Card>
+              </NewsCard>
+            );
+            // }
+          })
         ) : (
           <Loader />
         )}
@@ -248,7 +249,7 @@ const BottomContainer = styled.div`
   width: 600px;
   max-width: 85vw;
   height: 115px;
-  border-radius: 12px;
+  border-radius: 0px 0px 12px 12px;
   justify-content: center;
   border: 3px solid ${COLORS.secondary}; //Temp fix to the shadow issue
   transition: 0.2s;

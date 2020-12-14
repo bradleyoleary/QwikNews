@@ -13,6 +13,7 @@ import Homepage from './Components/Homepage';
 import ForgotPassword from './Components/ForgotPassword';
 import { ArticleDetailsProvider } from './Context/ArticleDetailsContext';
 import UserSettingsProvider from './Components/UserSettings';
+import OnboardingPage from './Components/OnboardingPage';
 
 const App = () => {
   return (
@@ -29,6 +30,9 @@ const App = () => {
                   <Signup />
                 </div>
               </Container>
+            </Route>
+            <Route path='/onboarding'>
+              <OnboardingPage />
             </Route>
             <Route path='/login'>
               <Container
