@@ -1,35 +1,34 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import { COLORS } from '../Styles/Constants';
-import { Link, useHistory } from 'react-router-dom';
-import clsx from 'clsx';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { COLORS } from "../Styles/Constants";
+import { Link, useHistory } from "react-router-dom";
+import clsx from "clsx";
 import {
   makeStyles,
   Drawer,
   List,
   Divider,
   IconButton,
-} from '@material-ui/core';
-import MenuBookIcon from '@material-ui/icons/MenuBook';
-import { Alert } from 'react-bootstrap';
-import { useAuth } from '../Context/AuthContext';
-import BookmarkIcon from '@material-ui/icons/Bookmark';
-import LibraryBooksIcon from '@material-ui/icons/LibraryBooks';
-import SettingsIcon from '@material-ui/icons/Settings';
-import PersonIcon from '@material-ui/icons/Person';
+} from "@material-ui/core";
+import { Alert } from "react-bootstrap";
+import { useAuth } from "../Context/AuthContext";
+import BookmarkIcon from "@material-ui/icons/Bookmark";
+import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
+import SettingsIcon from "@material-ui/icons/Settings";
+import PersonIcon from "@material-ui/icons/Person";
 
 const useStyles = makeStyles({
   list: {
     height: 300,
   },
   fullList: {
-    width: 'auto',
+    width: "auto",
   },
 });
 
 export default function UserProfile() {
   const classes = useStyles();
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const { currentUser, logout } = useAuth();
   const history = useHistory();
   const [state, setState] = React.useState({
@@ -38,8 +37,8 @@ export default function UserProfile() {
 
   const toggleDrawer = (anchor, open) => (event) => {
     if (
-      event.type === 'keydown' &&
-      (event.key === 'Tab' || event.key === 'Shift')
+      event.type === "keydown" &&
+      (event.key === "Tab" || event.key === "Shift")
     ) {
       return;
     }
@@ -48,20 +47,20 @@ export default function UserProfile() {
   };
 
   async function handleLogout() {
-    setError('');
+    setError("");
 
     try {
       await logout();
-      history.push('/login');
+      history.push("/login");
     } catch {
-      setError('Failed to log out.');
+      setError("Failed to log out.");
     }
   }
 
   const list = (anchor) => (
     <div
       className={clsx(classes.list, {
-        [classes.fullList]: anchor === 'top' || anchor === 'bottom',
+        [classes.fullList]: anchor === "top" || anchor === "bottom",
       })}
       role='presentation'
       onClick={toggleDrawer(anchor, false)}
@@ -75,20 +74,20 @@ export default function UserProfile() {
         <LinkToPages to='/'>
           <MenuItem>
             <LibraryBooksIcon
-              style={{ color: '#24cc89', marginRight: '5px' }}
+              style={{ color: "#24cc89", marginRight: "5px" }}
             />
             News Feed
           </MenuItem>
         </LinkToPages>
         <LinkToPages to='/bookmarks'>
           <MenuItem>
-            <BookmarkIcon style={{ color: '#4a56e2', marginRight: '5px' }} />
+            <BookmarkIcon style={{ color: "#4a56e2", marginRight: "5px" }} />
             My Bookmarks
           </MenuItem>
         </LinkToPages>
         <MenuItem>
           <div></div>
-          <SettingsIcon style={{ color: '#f5c11f', marginRight: '5px' }} />
+          <SettingsIcon style={{ color: "#f5c11f", marginRight: "5px" }} />
           Settings and privacy
         </MenuItem>
         <Button onClick={handleLogout}>Sign Out</Button>
@@ -98,7 +97,7 @@ export default function UserProfile() {
 
   return (
     <div>
-      {['bottom'].map((anchor) => (
+      {["bottom"].map((anchor) => (
         <React.Fragment key={anchor}>
           <IconButton>
             <PersonIcon
